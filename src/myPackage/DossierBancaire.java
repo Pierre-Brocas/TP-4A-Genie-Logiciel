@@ -21,5 +21,9 @@ public class DossierBancaire {
     public void remunerer() {
         CompteEpargne.setSolde(CompteEpargne.getSolde()*0.032);
     }
+
+    public void retirer(double value){
+        CompteCourant.setSolde(-value);
+    }
 	
 }

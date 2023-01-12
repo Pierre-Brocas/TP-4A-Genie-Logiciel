@@ -33,4 +33,14 @@ public class TestDossierBancaire {
 
 	}
 
+	@Test
+	public void test_retirer() 
+	{
+		DossierBancaire dossier=new DossierBancaire();
+		dossier.deposer(100);
+		dossier.retirer(20);
+		assertEquals(80,dossier.get_solde(),0); 
+
+	}
+
 }

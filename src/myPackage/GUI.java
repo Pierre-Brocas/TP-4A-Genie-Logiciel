@@ -17,11 +17,13 @@ public class GUI  implements ActionListener
     private JFrame frame;
 	private DossierBancaire m_dossier;
 	private JTextField m_saisie_depot;
+    private JTextField m_saisie_retirer;
 	private JTextField m_display_solde;
 	private JButton m_remuneration;
     private JLabel label_remunerer;
     private JLabel label_depot;
     private JLabel label_solde;
+    private JLabel label_retirer;
     private JRadioButton checkbox_client;
     private JRadioButton checkbox_banquier;
     
@@ -44,6 +46,11 @@ public class GUI  implements ActionListener
         m_saisie_depot.addActionListener(this);
         label_depot = new JLabel("Dépot");
 
+        //Element saisie label_retirer
+        m_saisie_retirer = new JTextField (20);
+        m_saisie_retirer.addActionListener(this);
+        label_retirer = new JLabel("Retirer");
+
         //Element declenchement remuneration
         m_remuneration = new JButton("OK");
         m_remuneration.addActionListener(this);
@@ -59,8 +66,7 @@ public class GUI  implements ActionListener
         frame = new JFrame("Editeur dossier bancaire");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         //Geometrie de repartition des elements graphiques
-        frame.setLayout(new GridLayout(4,2)); //4 lignes and 2 columns
-
+        frame.setLayout(new GridLayout(5,2)); //5 lignes and 2 colonnes
         //First line
         frame.getContentPane().add(checkbox_client);
         frame.add(checkbox_banquier);  
@@ -71,10 +77,16 @@ public class GUI  implements ActionListener
         frame.getContentPane().add(label_depot);
         frame.getContentPane().add(m_saisie_depot);  
         //Forth line
+        frame.getContentPane().add(label_retirer);
+        frame.getContentPane().add(m_saisie_retirer);
+        //Fifth line
         frame.getContentPane().add(label_remunerer);
         frame.getContentPane().add(m_remuneration);
-        label_remunerer.setVisible(false);
-        m_remuneration.setVisible(false);
+
+        // l'option remunerer est desactivée au début du programme avant le choix du role client/banquier
+        label_remunerer.setEnabled(false);
+        m_remuneration.setEnabled(false);
+
 
         frame.pack(); //Causes this Window to be sized to fit the preferred size and layouts of its subcomponents.
         frame.setVisible(true); //Shows this Window
@@ -83,26 +95,35 @@ public class GUI  implements ActionListener
     // Callbacks for buttons: dispatch processings
     public void actionPerformed(ActionEvent e)
     {
-    	if( e.getSource() == m_saisie_depot )
+    	if( e.getSource() == m_saisie_depot ) // saisie du dépot
     	{
     		float label_depot_value=Float.parseFloat(m_saisie_depot.getText());
     		m_dossier.deposer(label_depot_value);
     		m_saisie_depot.setText("");
     	}
-    	if( e.getSource() == m_remuneration )
+    	if( e.getSource() == m_remuneration ) // bouton "remunerer"
     	{
     		m_dossier.remunerer();
     	}
-        if( e.getSource() == checkbox_client )
+        if( e.getSource() == m_saisie_retirer ) // bouton "retirer"
     	{
-            label_remunerer.setVisible(false);
-            m_remuneration.setVisible(false);
+    		float label_retirer_value=Float.parseFloat(m_saisie_retirer.getText());
+    		m_dossier.retirer(label_retirer_value);
+    		m_saisie_retirer.setText("");
     	}
-        if( e.getSource() == checkbox_banquier )
+        if( e.getSource() == checkbox_client ) //checkbox "client"
     	{
-            label_remunerer.setVisible(true);
-            m_remuneration.setVisible(true);
+            // si l'utlisateur est banquier on désactive l'option remunérer
+            m_remuneration.setEnabled(false);
+            label_remunerer.setEnabled(false);
     	}
+        if( e.getSource() == checkbox_banquier ) //checkbox "banquier"
+    	{
+            // si l'utlisateur est banquier on active l'option remunérer
+            label_remunerer.setEnabled(true);
+            m_remuneration.setEnabled(true);
+    	}
+        // actualisation du solde
     	m_display_solde.setText(Double.toString(m_dossier.get_solde()));  	
     }
 }
